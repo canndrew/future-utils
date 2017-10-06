@@ -2,6 +2,8 @@
 name = "future-utils"
 version = "0.1.0"
 authors = ["Andrew Cann <shum@canndrew.org>"]
+description = "Extensions to Rust's Future and Stream traits"
+license = "GPL-2.0"
 
 [dependencies]
 futures = "~0.1.16"
