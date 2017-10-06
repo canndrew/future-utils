@@ -1,0 +1,11 @@
+[package]
+name = "future-utils"
+version = "0.1.0"
+authors = ["Andrew Cann <shum@canndrew.org>"]
+
+[dependencies]
+futures = "~0.1.16"
+void = "1"
+unwrap = "1.1"
+log = "~0.3.8"
+
