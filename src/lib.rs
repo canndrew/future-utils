@@ -3,6 +3,8 @@ extern crate futures;
 extern crate void;
 #[macro_use]
 extern crate log;
+#[macro_use]
+extern crate unwrap;
 
 use std::io;
 use futures::{Future, Stream, Sink};
@@ -15,6 +17,8 @@ mod first_ok;
 mod log_errors;
 mod log_error;
 mod infallible;
+mod next_or_else;
+pub mod mpsc;
 
 pub use drop_notify::{drop_notify, DropNotify, DropNotice};
 pub use until::Until;
@@ -22,6 +26,7 @@ pub use log_errors::LogErrors;
 pub use future_ext::FutureExt;
 pub use stream_ext::StreamExt;
 pub use infallible::Infallible;
+pub use next_or_else::NextOrElse;
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;

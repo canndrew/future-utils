@@ -6,7 +6,7 @@ description = "Extensions to Rust's Future and Stream traits"
 license = "GPL-2.0"
 
 [dependencies]
-futures = "~0.1.16"
+futures = "~0.1.15"
 void = "1"
 unwrap = "1.1"
 log = "~0.3.8"

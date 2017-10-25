@@ -7,6 +7,7 @@ use until::Until;
 use first_ok::FirstOk;
 use log_errors::LogErrors;
 use infallible::Infallible;
+use next_or_else::NextOrElse;
 use BoxStream;
 
 /// Extension trait for `Stream`.
@@ -58,6 +59,17 @@ pub trait StreamExt: Stream + Sized {
         Self: Stream<Error=Void>
     {
         Infallible::new(self)
+    }
+
+    /// Returns a future which returns the next item from the stream, along with the stream itself.
+    /// If the stream errors then just the error is returned. If the stream ends then the provided
+    /// closure is used to produce an error value.
+    fn next_or_else<F, E>(self, f: F) -> NextOrElse<Self, F>
+    where
+        F: FnOnce() -> E,
+        E: From<Self::Error>,
+    {
+        NextOrElse::new(self, f)
     }
 }
 
