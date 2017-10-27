@@ -1,5 +1,7 @@
 use futures::{Async, Future, Stream};
 
+/// Takes the next item from the stream. If the stream ends then the provided callback is used to
+/// generate an error.
 pub struct NextOrElse<S, F> {
     inner: Option<Inner<S, F>>,
 }
