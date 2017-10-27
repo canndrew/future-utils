@@ -1,9 +1,12 @@
 [package]
 name = "future-utils"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Andrew Cann <shum@canndrew.org>"]
 description = "Extensions to Rust's Future and Stream traits"
+repository = "https://github.com/canndew/future-utils"
 license = "GPL-2.0"
+keywords = ["futures", "async", "tokio"]
+categories = ["asynchronous", "network-programming"]
 
 [dependencies]
 futures = "~0.1.15"
