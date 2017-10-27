@@ -23,7 +23,9 @@ pub mod mpsc;
 
 pub use drop_notify::{drop_notify, DropNotify, DropNotice};
 pub use until::Until;
+pub use first_ok::FirstOk;
 pub use log_errors::LogErrors;
+pub use log_error::LogError;
 pub use future_ext::FutureExt;
 pub use stream_ext::StreamExt;
 pub use infallible::Infallible;

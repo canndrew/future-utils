@@ -1,5 +1,7 @@
 use futures::{Async, Future, Stream};
 
+/// Wraps a stream or future and runs a callback when the stream/future ends or when `Finally` is
+/// dropped.
 pub struct Finally<F, D>
 where
     D: FnOnce(),
