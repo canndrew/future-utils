@@ -8,6 +8,7 @@ use first_ok::FirstOk;
 use log_errors::LogErrors;
 use infallible::Infallible;
 use next_or_else::NextOrElse;
+use finally::Finally;
 use BoxStream;
 
 /// Extension trait for `Stream`.
@@ -70,6 +71,15 @@ pub trait StreamExt: Stream + Sized {
         E: From<Self::Error>,
     {
         NextOrElse::new(self, f)
+    }
+
+    /// Yields items from the stream and runs the provided callback when the stream finishes. The
+    /// callback will also be run if the entire stream is dropped.
+    fn finally<D>(self, on_drop: D) -> Finally<Self, D>
+    where
+        D: FnOnce()
+    {
+        Finally::new(self, on_drop)
     }
 }
 

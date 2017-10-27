@@ -6,6 +6,7 @@ use void::Void;
 use log_error::LogError;
 use until::Until;
 use infallible::Infallible;
+use finally::Finally;
 use BoxFuture;
 
 /// Extension trait for `Future`.
@@ -51,6 +52,15 @@ pub trait FutureExt: Future + Sized {
         Self::Error: Display,
     {
         LogError::new(self, level, description)
+    }
+
+    /// Executes the future and runs the provided callback when the future finishes. The callback
+    /// will also be run if the entire future is dropped.
+    fn finally<D>(self, on_drop: D) -> Finally<Self, D>
+    where
+        D: FnOnce()
+    {
+        Finally::new(self, on_drop)
     }
 }
 

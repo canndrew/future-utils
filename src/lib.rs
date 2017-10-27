@@ -18,6 +18,7 @@ mod log_errors;
 mod log_error;
 mod infallible;
 mod next_or_else;
+mod finally;
 pub mod mpsc;
 
 pub use drop_notify::{drop_notify, DropNotify, DropNotice};
@@ -27,6 +28,7 @@ pub use future_ext::FutureExt;
 pub use stream_ext::StreamExt;
 pub use infallible::Infallible;
 pub use next_or_else::NextOrElse;
+pub use finally::Finally;
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;
