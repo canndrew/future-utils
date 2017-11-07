@@ -1,4 +1,6 @@
 use std::fmt::Display;
+use std::time::{Instant, Duration};
+use tokio_core::reactor::Handle;
 use futures::{Future, Stream};
 use log::LogLevel;
 use void::Void;
@@ -9,6 +11,7 @@ use log_errors::LogErrors;
 use infallible::Infallible;
 use next_or_else::NextOrElse;
 use finally::Finally;
+use with_timeout::WithTimeout;
 use BoxStream;
 
 /// Extension trait for `Stream`.
@@ -80,6 +83,16 @@ pub trait StreamExt: Stream + Sized {
         D: FnOnce()
     {
         Finally::new(self, on_drop)
+    }
+
+    /// Runs the stream for the given duration.
+    fn with_timeout(self, duration: Duration, handle: &Handle) -> WithTimeout<Self> {
+        WithTimeout::new(self, duration, handle)
+    }
+
+    /// Runs the stream until the given timeout.
+    fn with_timeout_at(self, instant: Instant, handle: &Handle) -> WithTimeout<Self> {
+        WithTimeout::new_at(self, instant, handle)
     }
 }
 

@@ -13,4 +13,5 @@ futures = "~0.1.15"
 void = "1"
 unwrap = "1.1"
 log = "~0.3.8"
+tokio-core = "0.1.10"
 

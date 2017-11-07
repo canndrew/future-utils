@@ -1,4 +1,6 @@
 use std::fmt::Display;
+use std::time::{Instant, Duration};
+use tokio_core::reactor::Handle;
 use futures::Future;
 use log::LogLevel;
 use void::Void;
@@ -7,6 +9,7 @@ use log_error::LogError;
 use until::Until;
 use infallible::Infallible;
 use finally::Finally;
+use with_timeout::WithTimeout;
 use BoxFuture;
 
 /// Extension trait for `Future`.
@@ -61,6 +64,18 @@ pub trait FutureExt: Future + Sized {
         D: FnOnce()
     {
         Finally::new(self, on_drop)
+    }
+
+    /// Runs the future for the given duration, returning its value in an option, or returning
+    /// `None` if the timeout expires.
+    fn with_timeout(self, duration: Duration, handle: &Handle) -> WithTimeout<Self> {
+        WithTimeout::new(self, duration, handle)
+    }
+
+    /// Runs the future until the given instant, returning its value in an option, or returning
+    /// `None` if the timeout expires.
+    fn with_timeout_at(self, instant: Instant, handle: &Handle) -> WithTimeout<Self> {
+        WithTimeout::new_at(self, instant, handle)
     }
 }
 

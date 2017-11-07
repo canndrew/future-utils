@@ -1,3 +1,4 @@
+extern crate tokio_core;
 #[macro_use]
 extern crate futures;
 extern crate void;
@@ -19,6 +20,8 @@ mod log_error;
 mod infallible;
 mod next_or_else;
 mod finally;
+mod timeout;
+mod with_timeout;
 pub mod mpsc;
 
 pub use drop_notify::{drop_notify, DropNotify, DropNotice};
@@ -31,6 +34,8 @@ pub use stream_ext::StreamExt;
 pub use infallible::Infallible;
 pub use next_or_else::NextOrElse;
 pub use finally::Finally;
+pub use with_timeout::WithTimeout;
+pub use timeout::Timeout;
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;
