@@ -22,6 +22,7 @@ mod next_or_else;
 mod finally;
 mod timeout;
 mod with_timeout;
+pub mod bi_channel;
 pub mod mpsc;
 
 pub use drop_notify::{drop_notify, DropNotify, DropNotice};
