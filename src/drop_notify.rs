@@ -15,7 +15,7 @@ pub struct DropNotify {
     inner: BiLock<Inner>,
 }
 
-/// Created in tandem with a `DropNotifier` using the `drop_notify` function. `DropNotice` is a
+/// Created in tandem with a `DropNotify` using the `drop_notify` function. `DropNotice` is a
 /// future which resolves to `()` when its corresponding `DropNotify` is dropped.
 pub struct DropNotice {
     inner: BiLock<Inner>,
