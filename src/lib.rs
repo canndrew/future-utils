@@ -22,6 +22,7 @@ mod next_or_else;
 mod finally;
 mod timeout;
 mod with_timeout;
+mod thread_future;
 pub mod bi_channel;
 pub mod mpsc;
 
@@ -37,6 +38,7 @@ pub use next_or_else::NextOrElse;
 pub use finally::Finally;
 pub use with_timeout::WithTimeout;
 pub use timeout::Timeout;
+pub use thread_future::{thread_future, ThreadFuture};
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;
