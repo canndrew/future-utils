@@ -10,6 +10,7 @@ use until::Until;
 use infallible::Infallible;
 use finally::Finally;
 use with_timeout::WithTimeout;
+use first_ok2::FirstOk2;
 use BoxFuture;
 
 /// Extension trait for `Future`.
@@ -76,6 +77,15 @@ pub trait FutureExt: Future + Sized {
     /// `None` if the timeout expires.
     fn with_timeout_at(self, instant: Instant, handle: &Handle) -> WithTimeout<Self> {
         WithTimeout::new_at(self, instant, handle)
+    }
+
+    /// Run two futures in parallel and yield the value of the first to return success. If both
+    /// futures fail, return both errors.
+    fn first_ok2<F>(self, other: F) -> FirstOk2<Self, F>
+    where
+        F: Future<Item = Self::Item>
+    {
+        FirstOk2::new(self, other)
     }
 }
 

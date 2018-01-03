@@ -23,6 +23,7 @@ mod finally;
 mod timeout;
 mod with_timeout;
 mod thread_future;
+mod first_ok2;
 pub mod bi_channel;
 pub mod mpsc;
 
@@ -39,6 +40,7 @@ pub use finally::Finally;
 pub use with_timeout::WithTimeout;
 pub use timeout::Timeout;
 pub use thread_future::{thread_future, ThreadFuture};
+pub use first_ok2::FirstOk2;
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;
