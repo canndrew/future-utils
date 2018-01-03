@@ -11,6 +11,7 @@ use infallible::Infallible;
 use finally::Finally;
 use with_timeout::WithTimeout;
 use first_ok2::FirstOk2;
+use while_driving::WhileDriving;
 use BoxFuture;
 
 /// Extension trait for `Future`.
@@ -86,6 +87,11 @@ pub trait FutureExt: Future + Sized {
         F: Future<Item = Self::Item>
     {
         FirstOk2::new(self, other)
+    }
+
+    /// Resolves `self` while driving `other` in parallel.
+    fn while_driving<F: Future>(self, other: F) -> WhileDriving<Self, F> {
+        WhileDriving::new(self, other)
     }
 }
 
