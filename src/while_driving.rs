@@ -34,7 +34,7 @@ where
                 match a.poll() {
                     Ok(Async::Ready(x)) => {
                         let finish = Finish {
-                            inner: FinishInner::Running(b),
+                            state: FinishState::Inner(FinishInner::Running(b)),
                         };
                         Ok(Async::Ready((x, finish)))
                     },
@@ -54,7 +54,7 @@ where
                     },
                     Err(e) => {
                         let finish = Finish {
-                            inner: FinishInner::Running(b),
+                            state: FinishState::Inner(FinishInner::Running(b)),
                         };
                         Err((e, finish))
                     },
@@ -64,7 +64,7 @@ where
                 match a.poll() {
                     Ok(Async::Ready(x)) => {
                         let finish = Finish {
-                            inner: FinishInner::Ran(res),
+                            state: FinishState::Inner(FinishInner::Ran(res)),
                         };
                         Ok(Async::Ready((x, finish)))
                     },
@@ -74,7 +74,7 @@ where
                     },
                     Err(e) => {
                         let finish = Finish {
-                            inner: FinishInner::Ran(res),
+                            state: FinishState::Inner(FinishInner::Ran(res)),
                         };
                         Err((e, finish))
                     },
@@ -87,13 +87,30 @@ where
     }
 }
 
+/// Future yielded by `WhileDriving` which wraps the future it was driving. Can be resolved to
+/// whatever the original future would resolved to or unpacked using `into_inner`.
 pub struct Finish<B: Future> {
-    inner: FinishInner<B>,
+    state: FinishState<B>,
 }
 
-enum FinishInner<B: Future> {
+impl<B: Future> Finish<B> {
+    pub fn into_inner(self) -> FinishInner<B> {
+        match self.state {
+            FinishState::Inner(inner) => inner,
+            FinishState::Finished => {
+                panic!("into_inner() called on Finish which has already finished");
+            },
+        }
+    }
+}
+
+pub enum FinishInner<B: Future> {
     Running(B),
     Ran(Result<B::Item, B::Error>),
+}
+
+enum FinishState<B: Future> {
+    Inner(FinishInner<B>),
     Finished,
 }
 
@@ -102,15 +119,15 @@ impl<B: Future> Future for Finish<B> {
     type Error = B::Error;
 
     fn poll(&mut self) -> Result<Async<B::Item>, B::Error> {
-        let inner = mem::replace(&mut self.inner, FinishInner::Finished);
-        match inner {
-            FinishInner::Running(mut b) => {
+        let state = mem::replace(&mut self.state, FinishState::Finished);
+        match state {
+            FinishState::Inner(FinishInner::Running(mut b)) => {
                 match b.poll() {
                     Ok(Async::Ready(x)) => {
                         Ok(Async::Ready(x))
                     },
                     Ok(Async::NotReady) => {
-                        self.inner = FinishInner::Running(b);
+                        self.state = FinishState::Inner(FinishInner::Running(b));
                         Ok(Async::NotReady)
                     },
                     Err(e) => {
@@ -118,8 +135,8 @@ impl<B: Future> Future for Finish<B> {
                     },
                 }
             },
-            FinishInner::Ran(res) => Ok(Async::Ready(res?)),
-            FinishInner::Finished => {
+            FinishState::Inner(FinishInner::Ran(res)) => Ok(Async::Ready(res?)),
+            FinishState::Finished => {
                 panic!("poll() called on Finish which has already finished");
             },
         }

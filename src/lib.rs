@@ -42,7 +42,7 @@ pub use with_timeout::WithTimeout;
 pub use timeout::Timeout;
 pub use thread_future::{thread_future, ThreadFuture};
 pub use first_ok2::FirstOk2;
-pub use while_driving::WhileDriving;
+pub use while_driving::{WhileDriving, Finish, FinishInner};
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;
