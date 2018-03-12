@@ -1,6 +1,6 @@
 [package]
 name = "future-utils"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["Andrew Cann <shum@canndrew.org>"]
 description = "Extensions to Rust's Future and Stream traits"
 repository = "https://github.com/canndrew/future-utils"
