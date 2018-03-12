@@ -25,6 +25,7 @@ mod with_timeout;
 mod thread_future;
 mod first_ok2;
 mod while_driving;
+mod resume_unwind;
 pub mod bi_channel;
 pub mod mpsc;
 
@@ -43,6 +44,7 @@ pub use timeout::Timeout;
 pub use thread_future::{thread_future, ThreadFuture};
 pub use first_ok2::FirstOk2;
 pub use while_driving::{WhileDriving, Finish, FinishInner};
+pub use resume_unwind::ResumeUnwind;
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;

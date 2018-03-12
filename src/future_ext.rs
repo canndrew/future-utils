@@ -1,4 +1,5 @@
 use std::fmt::Display;
+use std::any::Any;
 use std::time::{Instant, Duration};
 use tokio_core::reactor::Handle;
 use futures::Future;
@@ -12,6 +13,7 @@ use finally::Finally;
 use with_timeout::WithTimeout;
 use first_ok2::FirstOk2;
 use while_driving::WhileDriving;
+use resume_unwind::ResumeUnwind;
 use BoxFuture;
 
 /// Extension trait for `Future`.
@@ -92,6 +94,14 @@ pub trait FutureExt: Future + Sized {
     /// Resolves `self` while driving `other` in parallel.
     fn while_driving<F: Future>(self, other: F) -> WhileDriving<Self, F> {
         WhileDriving::new(self, other)
+    }
+
+    /// Propogates the result of a `.catch_unwind`, panicking if the future resolves to an `Err`
+    fn resume_unwind(self) -> ResumeUnwind<Self>
+    where
+        Self: Future<Error=Box<Any + Send + 'static>>,
+    {
+        ResumeUnwind::new(self)
     }
 }
 
