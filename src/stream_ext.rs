@@ -12,6 +12,7 @@ use infallible::Infallible;
 use next_or_else::NextOrElse;
 use finally::Finally;
 use with_timeout::WithTimeout;
+use with_readiness_timeout::WithReadinessTimeout;
 use BoxStream;
 
 /// Extension trait for `Stream`.
@@ -93,6 +94,10 @@ pub trait StreamExt: Stream + Sized {
     /// Runs the stream until the given timeout.
     fn with_timeout_at(self, instant: Instant, handle: &Handle) -> WithTimeout<Self> {
         WithTimeout::new_at(self, instant, handle)
+    }
+
+    fn with_readiness_timeout(self, duration: Duration, handle: &Handle) -> WithReadinessTimeout<Self> {
+        WithReadinessTimeout::new(self, duration, handle)
     }
 }
 

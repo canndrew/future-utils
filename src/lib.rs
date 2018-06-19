@@ -26,6 +26,7 @@ mod thread_future;
 mod first_ok2;
 mod while_driving;
 mod resume_unwind;
+mod with_readiness_timeout;
 pub mod bi_channel;
 pub mod mpsc;
 
@@ -41,6 +42,7 @@ pub use next_or_else::NextOrElse;
 pub use finally::Finally;
 pub use with_timeout::WithTimeout;
 pub use timeout::Timeout;
+pub use with_readiness_timeout::WithReadinessTimeout;
 pub use thread_future::{thread_future, ThreadFuture};
 pub use first_ok2::FirstOk2;
 pub use while_driving::{WhileDriving, Finish, FinishInner};
