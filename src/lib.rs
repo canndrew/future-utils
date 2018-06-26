@@ -6,6 +6,8 @@ extern crate void;
 extern crate log;
 #[macro_use]
 extern crate unwrap;
+extern crate bytes;
+extern crate tokio_io;
 
 use std::io;
 use futures::{Future, Stream, Sink};
@@ -29,6 +31,7 @@ mod resume_unwind;
 mod with_readiness_timeout;
 pub mod bi_channel;
 pub mod mpsc;
+mod framed_unbuffered;
 
 pub use drop_notify::{drop_notify, DropNotify, DropNotice};
 pub use until::Until;
@@ -47,6 +50,7 @@ pub use thread_future::{thread_future, ThreadFuture};
 pub use first_ok2::FirstOk2;
 pub use while_driving::{WhileDriving, Finish, FinishInner};
 pub use resume_unwind::ResumeUnwind;
+pub use framed_unbuffered::FramedUnbuffered;
 
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;

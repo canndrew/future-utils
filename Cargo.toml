@@ -14,4 +14,6 @@ void = "1"
 unwrap = "1.1"
 log = "~0.3.8"
 tokio-core = "0.1.10"
+tokio-io = "0.1"
+bytes = "0.4"
 
