@@ -1,28 +1,28 @@
 use std::time::{Duration, Instant};
-use tokio_core::reactor::Handle;
 use futures::{Async, Future, Stream};
-use timeout::Timeout;
+use delay::Delay;
 use void::ResultVoidExt;
 
 pub struct WithTimeout<F> {
     inner: F,
-    timeout: Timeout,
+    delay: Delay,
 }
 
 impl<F> WithTimeout<F> {
     /// Creates a new `WithTimeout` which runs `inner` for the given duration.
-    pub fn new(inner: F, duration: Duration, handle: &Handle) -> WithTimeout<F> {
+    pub fn new(inner: F, duration: Duration) -> WithTimeout<F> {
+        let deadline = Instant::now() + duration;
         WithTimeout {
             inner: inner,
-            timeout: Timeout::new(duration, handle),
+            delay: Delay::new(deadline),
         }
     }
 
     /// Creates a new `WithTimeout` which runs `inner` until the given instant.
-    pub fn new_at(inner: F, instant: Instant, handle: &Handle) -> WithTimeout<F> {
+    pub fn new_at(inner: F, instant: Instant) -> WithTimeout<F> {
         WithTimeout {
             inner: inner,
-            timeout: Timeout::new_at(instant, handle),
+            delay: Delay::new(instant),
         }
     }
 
@@ -40,7 +40,7 @@ where
     type Error = F::Error;
 
     fn poll(&mut self) -> Result<Async<Option<F::Item>>, F::Error> {
-        if let Async::Ready(()) = self.timeout.poll().void_unwrap() {
+        if let Async::Ready(()) = self.delay.poll().void_unwrap() {
             return Ok(Async::Ready(None));
         }
 
@@ -60,7 +60,7 @@ where
     type Error = F::Error;
 
     fn poll(&mut self) -> Result<Async<Option<F::Item>>, F::Error> {
-        if let Async::Ready(()) = self.timeout.poll().void_unwrap() {
+        if let Async::Ready(()) = self.delay.poll().void_unwrap() {
             return Ok(Async::Ready(None));
         }
 

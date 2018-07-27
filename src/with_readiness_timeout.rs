@@ -1,20 +1,19 @@
 use std::time::{Instant, Duration};
-use Timeout;
-use tokio_core::reactor::Handle;
+use Delay;
 use futures::{Future, Stream, Async};
 use void::ResultVoidExt;
 
 pub struct WithReadinessTimeout<S> {
     stream: S,
     duration: Duration,
-    timeout: Timeout,
+    delay: Delay,
 }
 
 impl<S> WithReadinessTimeout<S> {
-    pub fn new(stream: S, duration: Duration, handle: &Handle) -> WithReadinessTimeout<S> {
-        let timeout = Timeout::new(duration, handle);
+    pub fn new(stream: S, duration: Duration) -> WithReadinessTimeout<S> {
+        let delay = Delay::new(Instant::now() + duration);
         WithReadinessTimeout {
-            stream, duration, timeout,
+            stream, duration, delay,
         }
     }
 }
@@ -26,12 +25,12 @@ impl<S: Stream> Stream for WithReadinessTimeout<S> {
     fn poll(&mut self) -> Result<Async<Option<S::Item>>, S::Error> {
         match self.stream.poll() {
             Ok(Async::Ready(Some(item))) => {
-                self.timeout.reset(Instant::now() + self.duration);
+                self.delay.reset(Instant::now() + self.duration);
                 Ok(Async::Ready(Some(item)))
             }
             Ok(Async::Ready(None)) => Ok(Async::Ready(None)),
             Ok(Async::NotReady) => {
-                match self.timeout.poll().void_unwrap() {
+                match self.delay.poll().void_unwrap() {
                     Async::Ready(()) => Ok(Async::Ready(None)),
                     Async::NotReady => Ok(Async::NotReady),
                 }

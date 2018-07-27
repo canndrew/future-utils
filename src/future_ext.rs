@@ -1,7 +1,6 @@
 use std::fmt::Display;
 use std::any::Any;
 use std::time::{Instant, Duration};
-use tokio_core::reactor::Handle;
 use futures::Future;
 use log::LogLevel;
 use void::Void;
@@ -15,6 +14,7 @@ use first_ok2::FirstOk2;
 use while_driving::WhileDriving;
 use resume_unwind::ResumeUnwind;
 use BoxFuture;
+use BoxSendFuture;
 
 /// Extension trait for `Future`.
 pub trait FutureExt: Future + Sized {
@@ -27,12 +27,19 @@ pub trait FutureExt: Future + Sized {
         Box::new(self)
     }
 
+    fn into_send_boxed(self) -> BoxSendFuture<Self::Item, Self::Error>
+    where
+        Self: Send + 'static,
+    {
+        Box::new(self)
+    }
+
     /// Run this future until some condition is met. If `condition` resolves before `self` then
     /// `None` is returned.
     ///
     /// # Example
     /// ```rust
-    /// let my_future_with_timeout = my_future.until(Timeout::new(Duration::from_secs(1)));
+    /// let my_future_with_timeout = my_future.until(Delay::new(Instant::now() + Duration::from_secs(1)));
     /// ```
     fn until<C>(self, condition: C) -> Until<Self, C>
     where
@@ -72,14 +79,14 @@ pub trait FutureExt: Future + Sized {
 
     /// Runs the future for the given duration, returning its value in an option, or returning
     /// `None` if the timeout expires.
-    fn with_timeout(self, duration: Duration, handle: &Handle) -> WithTimeout<Self> {
-        WithTimeout::new(self, duration, handle)
+    fn with_timeout(self, duration: Duration) -> WithTimeout<Self> {
+        WithTimeout::new(self, duration)
     }
 
     /// Runs the future until the given instant, returning its value in an option, or returning
     /// `None` if the timeout expires.
-    fn with_timeout_at(self, instant: Instant, handle: &Handle) -> WithTimeout<Self> {
-        WithTimeout::new_at(self, instant, handle)
+    fn with_timeout_at(self, instant: Instant) -> WithTimeout<Self> {
+        WithTimeout::new_at(self, instant)
     }
 
     /// Run two futures in parallel and yield the value of the first to return success. If both

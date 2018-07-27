@@ -1,4 +1,4 @@
-extern crate tokio_core;
+extern crate tokio;
 #[macro_use]
 extern crate futures;
 extern crate void;
@@ -7,7 +7,6 @@ extern crate log;
 #[macro_use]
 extern crate unwrap;
 extern crate bytes;
-extern crate tokio_io;
 
 use std::io;
 use futures::{Future, Stream, Sink};
@@ -22,7 +21,7 @@ mod log_error;
 mod infallible;
 mod next_or_else;
 mod finally;
-mod timeout;
+mod delay;
 mod with_timeout;
 mod thread_future;
 mod first_ok2;
@@ -44,7 +43,7 @@ pub use infallible::Infallible;
 pub use next_or_else::NextOrElse;
 pub use finally::Finally;
 pub use with_timeout::WithTimeout;
-pub use timeout::Timeout;
+pub use delay::Delay;
 pub use with_readiness_timeout::WithReadinessTimeout;
 pub use thread_future::{thread_future, ThreadFuture};
 pub use first_ok2::FirstOk2;
@@ -55,6 +54,10 @@ pub use framed_unbuffered::FramedUnbuffered;
 pub type BoxFuture<T, E> = Box<Future<Item=T, Error=E>>;
 pub type BoxStream<T, E> = Box<Stream<Item=T, Error=E>>;
 pub type BoxSink<T, E> = Box<Sink<SinkItem=T, SinkError=E>>;
+
+pub type BoxSendFuture<T, E> = Box<Future<Item=T, Error=E> + Send>;
+pub type BoxSendStream<T, E> = Box<Stream<Item=T, Error=E> + Send>;
+pub type BoxSendSink<T, E> = Box<Sink<SinkItem=T, SinkError=E> + Send>;
 
 pub type IoFuture<T> = Box<Future<Item=T, Error=io::Error>>;
 pub type IoStream<T> = Box<Stream<Item=T, Error=io::Error>>;

@@ -1,5 +1,5 @@
 use bytes::{Bytes, BytesMut};
-use tokio_io::{AsyncRead, AsyncWrite};
+use tokio::io::{AsyncRead, AsyncWrite};
 use futures::{Stream, Sink, Async, AsyncSink};
 use std::{io, mem};
 

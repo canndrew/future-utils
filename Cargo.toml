@@ -13,7 +13,6 @@ futures = "~0.1.15"
 void = "1"
 unwrap = "1.1"
 log = "~0.3.8"
-tokio-core = "0.1.10"
-tokio-io = "0.1"
+tokio = "0.1.7"
 bytes = "0.4"
 

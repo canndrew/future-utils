@@ -1,6 +1,5 @@
 use std::fmt::Display;
 use std::time::{Instant, Duration};
-use tokio_core::reactor::Handle;
 use futures::{Future, Stream};
 use log::LogLevel;
 use void::Void;
@@ -13,7 +12,7 @@ use next_or_else::NextOrElse;
 use finally::Finally;
 use with_timeout::WithTimeout;
 use with_readiness_timeout::WithReadinessTimeout;
-use BoxStream;
+use {BoxStream, BoxSendStream};
 
 /// Extension trait for `Stream`.
 pub trait StreamExt: Stream + Sized {
@@ -26,12 +25,19 @@ pub trait StreamExt: Stream + Sized {
         Box::new(self)
     }
 
+    fn into_send_boxed(self) -> BoxSendStream<Self::Item, Self::Error>
+    where
+        Self: Send + 'static,
+    {
+        Box::new(self)
+    }
+
     /// Run this stream until some condition is met. `condition` is a future which returns `()`,
     /// after which this stream will be finished.
     ///
     /// # Example
     /// ```rust
-    /// let my_stream_with_timeout = my_stream.until(Timeout::new(Duration::from_secs(1)));
+    /// let my_stream_with_timeout = my_stream.until(Delay::new(Instant::now() + Duration::from_secs(1)));
     /// ```
     fn until<C>(self, condition: C) -> Until<Self, C>
     where
@@ -87,17 +93,17 @@ pub trait StreamExt: Stream + Sized {
     }
 
     /// Runs the stream for the given duration.
-    fn with_timeout(self, duration: Duration, handle: &Handle) -> WithTimeout<Self> {
-        WithTimeout::new(self, duration, handle)
+    fn with_timeout(self, duration: Duration) -> WithTimeout<Self> {
+        WithTimeout::new(self, duration)
     }
 
     /// Runs the stream until the given timeout.
-    fn with_timeout_at(self, instant: Instant, handle: &Handle) -> WithTimeout<Self> {
-        WithTimeout::new_at(self, instant, handle)
+    fn with_timeout_at(self, instant: Instant) -> WithTimeout<Self> {
+        WithTimeout::new_at(self, instant)
     }
 
-    fn with_readiness_timeout(self, duration: Duration, handle: &Handle) -> WithReadinessTimeout<Self> {
-        WithReadinessTimeout::new(self, duration, handle)
+    fn with_readiness_timeout(self, duration: Duration) -> WithReadinessTimeout<Self> {
+        WithReadinessTimeout::new(self, duration)
     }
 }
 

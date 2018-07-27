@@ -56,17 +56,15 @@ pub fn unbounded<T>() -> (UnboundedBiChannel<T>, UnboundedBiChannel<T>) {
 #[cfg(test)]
 mod test {
     use super::*;
-    use tokio_core::reactor::Core;
+    use tokio;
     use futures::{Future, Stream};
 
     #[test]
     fn test() {
         let (ch0, ch1) = unbounded();
 
-        let mut core = unwrap!(Core::new());
-        let res = core.run({
+        let res = tokio::executor::current_thread::block_on_all({
             let data = 123u32;
-            let msg = data;
 
             ch0
             .send(data)
