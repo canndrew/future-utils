@@ -25,3 +25,13 @@ impl<T> Stream for UnboundedReceiver<T> {
     }
 }
 
+impl<T> UnboundedReceiver<T> {
+    /// Closes the receiving half
+    ///
+    /// This prevents any further messages from being sent on the channel while still enabling the
+    /// receiver to drain messages that are buffered.
+    pub fn close(&mut self) {
+        self.inner.close()
+    }
+}
+
