@@ -12,7 +12,7 @@ categories = ["asynchronous", "network-programming"]
 futures = "~0.1.15"
 void = "1"
 unwrap = "1.1"
-log = "~0.3.8"
+log = "~0.4.6"
 tokio = "0.1.7"
 bytes = "0.4"
 

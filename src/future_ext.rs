@@ -2,7 +2,7 @@ use std::fmt::Display;
 use std::any::Any;
 use std::time::{Instant, Duration};
 use futures::Future;
-use log::LogLevel;
+use log;
 use void::Void;
 
 use log_error::LogError;
@@ -60,7 +60,7 @@ pub trait FutureExt: Future + Sized {
 
     /// Take a future which returns `()` and log its error if it fails. The returned future cannot
     /// fail and will always resolve to `()`.
-    fn log_error(self, level: LogLevel, description: &'static str) -> LogError<Self>
+    fn log_error(self, level: log::Level, description: &'static str) -> LogError<Self>
     where
         Self: Future<Item=()>,
         Self::Error: Display,
