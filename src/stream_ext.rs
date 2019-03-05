@@ -1,7 +1,7 @@
 use std::fmt::Display;
 use std::time::{Instant, Duration};
 use futures::{Future, Stream};
-use log::LogLevel;
+use log;
 use void::Void;
 
 use until::Until;
@@ -56,7 +56,7 @@ pub trait StreamExt: Stream + Sized {
 
     /// Removes the errors from this stream and log them. `description` is prepended to the log
     /// messages. The returned stream has error type `Void` since the errors have been removed.
-    fn log_errors(self, level: LogLevel, description: &'static str) -> LogErrors<Self>
+    fn log_errors(self, level: log::Level, description: &'static str) -> LogErrors<Self>
     where
         Self::Error: Display
     {
