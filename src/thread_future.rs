@@ -4,7 +4,7 @@ use std::{thread, panic};
 use void::Void;
 
 /// Wraps a synchronous function into a future by running it in its own thread. Created using
-/// `thread_future`.
+/// [`thread_future`].
 pub struct ThreadFuture<R> {
     join_handle: Option<thread::JoinHandle<()>>,
     rx: oneshot::Receiver<R>,
